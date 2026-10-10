@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title">
+  <title id="title">LaptopFactory Goa emblem</title>
+  <g>
+    <path d="M27 3h10l-1 20h-8L27 3Z" fill="#d9302f"/>
+    <path d="M47.9 9.7 55 16.8 40.2 30.2l-5.7-5.7L47.9 9.7Z" fill="#e77b32"/>
+    <path d="M61 27v10l-20-1v-8l20-1Z" fill="#b72b82"/>
+    <path d="m54.3 47.9-7.1 7.1L33.8 40.2l5.7-5.7 14.8 13.4Z" fill="#813eaa"/>
+    <path d="M37 61H27l1-20h8l1 20Z" fill="#159bb7"/>
+    <path d="m16.1 54.3-7.1-7.1 14.8-13.4 5.7 5.7-13.4 14.8Z" fill="#74ad39"/>
+    <path d="M3 37V27l20 1v8L3 37Z" fill="#848b90"/>
+    <path d="m9.7 16.1 7.1-7.1 13.4 14.8-5.7 5.7L9.7 16.1Z" fill="#267fae"/>
+  </g>
+  <circle cx="32" cy="32" r="13.5" fill="#fdfdfc" stroke="#293744" stroke-width="2.6"/>
+  <path d="M27 24v16" stroke="#168bb2" stroke-width="3.4" stroke-linecap="square"/>
+  <path d="M29 25h9M29 32h8" stroke="#d73532" stroke-width="3.2" stroke-linecap="square"/>
+  <path d="M29 39h9" stroke="#ebc428" stroke-width="3.2" stroke-linecap="square"/>
+</svg>

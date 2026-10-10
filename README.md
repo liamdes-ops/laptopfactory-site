@@ -1,23 +1,18 @@
-# LaptopFactory website
+# LaptopFactory
 
-A responsive, static multi-page website for LaptopFactory in Bardez, Goa.
+A small, responsive website for LaptopFactory, a refurbished computer and repair shop in Bardez, Goa.
 
 ## Pages
 
-- `index.html` — overview and calls to action
-- `products.html` — refurbished laptop and desktop categories, with stock inquiries
-- `repairs.html` — repair information and inquiry links
-- `contact.html` — phone, WhatsApp, directions, and the supplied opening-time note
+- index.html — shop overview and paths to buying or repairs
+- products.html — refurbished laptop and desktop categories
+- repairs.html — repair contact information
+- contact.html — Bardez location, phone, WhatsApp, map directions, and listed opening-time note
 
-## Preview
+## Updating business details
 
-Open `index.html` in a browser, or upload the contents of this folder to a static host such as Vercel. There is no build step or backend. Inventory and prices are intentionally not fabricated; WhatsApp buttons ask the shop for current availability.
+The phone number, WhatsApp links, map URL, Instagram profile, and listed opening-time note are written directly in the HTML pages. Update these values if the shop details change. Current computer stock and prices are intentionally not listed because they should be confirmed with the shop. The small logo mark is the local laptopfactory-mark.svg asset.
 
-## Details used
+Each page has its own layout while sharing LaptopFactory's clean, friendly style: the home page features an opening laptop, the products page uses a warm computer catalog, the repairs page has a technical service-desk illustration and a three-step intake, and the location page centers on a custom map illustration. Page headings and content use varied reveal motions, with reduced-motion preferences respected.
 
-- LaptopFactory — IT service and computer repair
-- 1202/1, Laxmi Narayan Link Road, Bardez, Goa 403517
-- Phone: 099222 21640
-- Opening-time note supplied: Monday at 09:30; the site advises visitors to call ahead
-
-The phone is linked with India's `+91` country code based on the supplied Goa address and postal code. Please confirm the number and WhatsApp account before publishing.
+The pages use plain HTML, CSS, and JavaScript; no build command is required. index.html is the site entry point. In Vercel, set the project root to the directory containing these files.
