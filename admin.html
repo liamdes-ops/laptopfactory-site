@@ -25,6 +25,13 @@
         <label>Password<input type="password" name="password" autocomplete="current-password" required maxlength="1024"></label>
         <button class="button button-primary" type="submit">Sign in <span aria-hidden="true">↗</span></button>
       </form>
+      <button class="admin-text-button" id="show-recovery-form" type="button">Forgot your password?</button>
+      <form id="admin-recovery-form" class="admin-form admin-login-form" hidden>
+        <label>Email address<input type="email" name="email" autocomplete="username" required maxlength="254"></label>
+        <button class="button button-primary" type="submit">Send password reset <span aria-hidden="true">↗</span></button>
+        <button class="admin-text-button" id="hide-recovery-form" type="button">Back to sign in</button>
+      </form>
+      <p class="admin-message" id="recovery-message" role="status" aria-live="polite"></p>
       <p class="admin-message" id="login-message" role="status" aria-live="polite"></p>
     </section>
 
