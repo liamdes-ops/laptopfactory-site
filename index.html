@@ -6,7 +6,7 @@
   <script>
     (() => {
       const invite = new URLSearchParams(window.location.hash.slice(1));
-      if ((invite.get("type") === "invite" && invite.has("access_token")) || invite.has("error_description")) {
+      if ((["invite", "recovery"].includes(invite.get("type")) && invite.has("access_token")) || invite.has("error_description")) {
         const target = new URL("/admin.html", window.location.origin);
         target.search = window.location.search;
         target.hash = window.location.hash;
