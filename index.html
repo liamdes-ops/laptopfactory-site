@@ -3,6 +3,17 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f7f8fa">
   <meta name="description" content="Refurbished laptops, desktop PCs and computer repairs in Bardez, Goa. Call LaptopFactory to ask about stock or service.">
+  <script>
+    (() => {
+      const invite = new URLSearchParams(window.location.hash.slice(1));
+      if ((invite.get("type") === "invite" && invite.has("access_token")) || invite.has("error_description")) {
+        const target = new URL("/admin.html", window.location.origin);
+        target.search = window.location.search;
+        target.hash = window.location.hash;
+        window.location.replace(target.href);
+      }
+    })();
+  </script>
   <title>LaptopFactory | Refurbished computers & repairs in Bardez</title><link rel="stylesheet" href="styles.css">
 </head>
 <body class="page-home">
@@ -26,3 +37,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
