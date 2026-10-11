@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f1eee7">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
   <title>Stock admin | LaptopFactory</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,6 +26,19 @@
         <button class="button button-primary" type="submit">Sign in <span aria-hidden="true">↗</span></button>
       </form>
       <p class="admin-message" id="login-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="admin-login-card" id="admin-invite-panel" hidden aria-labelledby="invite-title">
+      <p class="eyebrow">LAPTOPFACTORY · STAFF ONLY</p>
+      <h1 id="invite-title">Set your password</h1>
+      <p class="admin-intro">Choose a password to finish setting up your stock admin account.</p>
+      <form id="admin-invite-form" class="admin-form admin-login-form">
+        <label>New password<input type="password" name="password" autocomplete="new-password" required minlength="8" maxlength="1024"></label>
+        <label>Confirm password<input type="password" name="password_confirmation" autocomplete="new-password" required minlength="8" maxlength="1024"></label>
+        <button class="button button-primary" type="submit">Set password <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="admin-message" id="invite-message" role="status" aria-live="polite"></p>
+      <button class="admin-text-button" id="invite-back-to-login" type="button">Back to sign in</button>
     </section>
 
     <section class="admin-dashboard" id="admin-dashboard" hidden aria-labelledby="dashboard-title">
@@ -71,3 +85,4 @@
   <script src="admin.js" defer></script>
 </body>
 </html>
+
