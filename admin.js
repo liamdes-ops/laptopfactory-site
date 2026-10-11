@@ -3,8 +3,10 @@ const invitePanel = document.querySelector("#admin-invite-panel");
 const dashboard = document.querySelector("#admin-dashboard");
 const loginForm = document.querySelector("#admin-login-form");
 const inviteForm = document.querySelector("#admin-invite-form");
+const recoveryForm = document.querySelector("#admin-recovery-form");
 const loginMessage = document.querySelector("#login-message");
 const inviteMessage = document.querySelector("#invite-message");
+const recoveryMessage = document.querySelector("#recovery-message");
 const dashboardMessage = document.querySelector("#dashboard-message");
 const inventoryForm = document.querySelector("#inventory-form");
 const tableBody = document.querySelector("#inventory-table-body");
@@ -46,6 +48,8 @@ async function apiRequest(url, options = {}) {
       password_too_short: "Choose a password with at least 8 characters.",
       password_update_failed: "Supabase could not save that password. Try another password or ask the admin to send a fresh invite.",
       admin_not_allowed: "This email is not listed as a LaptopFactory admin. Ask the project owner to check the admin email setting.",
+      enter_valid_email: "Enter the email address used for your admin account.",
+      recovery_rate_limited: "Too many reset emails were requested. Wait a while, then try again.",
       inventory_temporarily_unavailable: "Couldn’t save the stock right now. Try again in a moment.",
       item_not_found: "That stock item was already removed.",
     };
@@ -174,6 +178,37 @@ document.querySelector("#admin-login-form").addEventListener("submit", async (ev
     }
   } catch (error) {
     showMessage(loginMessage, error.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+document.querySelector("#show-recovery-form").addEventListener("click", () => {
+  recoveryForm.elements.email.value = loginForm.elements.email.value;
+  loginForm.hidden = true;
+  recoveryForm.hidden = false;
+  showMessage(recoveryMessage, "");
+});
+
+document.querySelector("#hide-recovery-form").addEventListener("click", () => {
+  recoveryForm.hidden = true;
+  loginForm.hidden = false;
+  showMessage(recoveryMessage, "");
+});
+
+recoveryForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = recoveryForm.querySelector("button[type=submit]");
+  button.disabled = true;
+  showMessage(recoveryMessage, "Sending password reset email…");
+  try {
+    await apiRequest("/api/admin/recovery", {
+      method: "POST",
+      body: JSON.stringify({ email: recoveryForm.elements.email.value }),
+    });
+    showMessage(recoveryMessage, "If an account exists for this email, Supabase has sent a password reset link. Check your inbox and spam folder.");
+  } catch (error) {
+    showMessage(recoveryMessage, error.message, true);
   } finally {
     button.disabled = false;
   }
