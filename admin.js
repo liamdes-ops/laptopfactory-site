@@ -1,13 +1,28 @@
 const loginPanel = document.querySelector("#admin-login-panel");
+const invitePanel = document.querySelector("#admin-invite-panel");
 const dashboard = document.querySelector("#admin-dashboard");
 const loginForm = document.querySelector("#admin-login-form");
+const inviteForm = document.querySelector("#admin-invite-form");
 const loginMessage = document.querySelector("#login-message");
+const inviteMessage = document.querySelector("#invite-message");
 const dashboardMessage = document.querySelector("#dashboard-message");
 const inventoryForm = document.querySelector("#inventory-form");
 const tableBody = document.querySelector("#inventory-table-body");
 const formTitle = document.querySelector("#inventory-form-title");
 const currency = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 let stockItems = [];
+const inviteParams = new URLSearchParams(window.location.hash.slice(1));
+const inviteError = inviteParams.get("error_description") || inviteParams.get("error");
+let inviteCredentials = inviteParams.get("type") === "invite" && inviteParams.get("access_token")
+  ? {
+      access_token: inviteParams.get("access_token"),
+      refresh_token: inviteParams.get("refresh_token") || "",
+    }
+  : null;
+
+if (inviteCredentials || inviteError) {
+  window.history.replaceState(null, document.title, `${window.location.pathname}${window.location.search}`);
+}
 
 function showMessage(target, message, isError = false) {
   target.textContent = message;
@@ -27,6 +42,10 @@ async function apiRequest(url, options = {}) {
       admin_backend_not_configured: "Backend setup is incomplete. Add the Supabase settings in Vercel first.",
       unauthorized: "Your sign-in has expired. Please sign in again.",
       invalid_login: "That email or password didn’t work.",
+      invalid_invitation: "This invitation link has expired or was already used. Ask the admin to send a new one.",
+      password_too_short: "Choose a password with at least 8 characters.",
+      password_update_failed: "Supabase could not save that password. Try another password or ask the admin to send a fresh invite.",
+      admin_not_allowed: "This email is not listed as a LaptopFactory admin. Ask the project owner to check the admin email setting.",
       inventory_temporarily_unavailable: "Couldn’t save the stock right now. Try again in a moment.",
       item_not_found: "That stock item was already removed.",
     };
@@ -37,13 +56,21 @@ async function apiRequest(url, options = {}) {
 
 function setSignedIn(email) {
   loginPanel.hidden = true;
+  invitePanel.hidden = true;
   dashboard.hidden = false;
   document.querySelector("#admin-signed-in").textContent = email;
 }
 
 function signedOut() {
   dashboard.hidden = true;
+  invitePanel.hidden = true;
   loginPanel.hidden = false;
+}
+
+function showInvitePanel(message = "") {
+  loginPanel.hidden = true;
+  invitePanel.hidden = false;
+  showMessage(inviteMessage, message, Boolean(message));
 }
 
 function appendCell(row, text, className = "") {
@@ -152,6 +179,51 @@ document.querySelector("#admin-login-form").addEventListener("submit", async (ev
   }
 });
 
+inviteForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!inviteCredentials) {
+    showMessage(inviteMessage, "This invitation link is missing or expired. Ask the admin to send another.", true);
+    return;
+  }
+
+  const button = inviteForm.querySelector("button[type=submit]");
+  const password = inviteForm.elements.password.value;
+  const confirmation = inviteForm.elements.password_confirmation.value;
+  if (password.length < 8) {
+    showMessage(inviteMessage, "Choose a password with at least 8 characters.", true);
+    return;
+  }
+  if (password !== confirmation) {
+    showMessage(inviteMessage, "Those passwords do not match.", true);
+    return;
+  }
+
+  button.disabled = true;
+  showMessage(inviteMessage, "Saving your password…");
+  try {
+    const result = await apiRequest("/api/admin/invitation", {
+      method: "POST",
+      body: JSON.stringify({ ...inviteCredentials, password }),
+    });
+    inviteCredentials = null;
+    inviteForm.reset();
+    setSignedIn(result.admin.email);
+    showMessage(dashboardMessage, "Password set. You’re signed in to stock admin.");
+    try { await loadStock(); } catch (error) { showMessage(dashboardMessage, error.message, true); }
+  } catch (error) {
+    showMessage(inviteMessage, error.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+document.querySelector("#invite-back-to-login").addEventListener("click", () => {
+  inviteCredentials = null;
+  invitePanel.hidden = true;
+  loginPanel.hidden = false;
+  showMessage(loginMessage, "");
+});
+
 document.querySelector("#admin-logout").addEventListener("click", async () => {
   try { await apiRequest("/api/admin/auth", { method: "DELETE" }); } catch { /* The local session is cleared either way. */ }
   signedOut();
@@ -222,6 +294,11 @@ tableBody.addEventListener("click", async (event) => {
   }
 });
 
+if (inviteCredentials) {
+  showInvitePanel();
+} else if (inviteError) {
+  showInvitePanel("This invitation link could not be verified. Ask the admin to send a fresh one.");
+} else {
 fetch("/api/admin/auth", { headers: { Accept: "application/json" }, credentials: "same-origin", cache: "no-store" })
   .then(async (response) => ({ ok: response.ok, data: await response.json().catch(() => ({})) }))
   .then(async ({ ok, data }) => {
@@ -233,5 +310,7 @@ fetch("/api/admin/auth", { headers: { Accept: "application/json" }, credentials:
     }
   })
   .catch(() => showMessage(loginMessage, "Could not reach the stock service. Please try again.", true));
+}
 
 document.querySelectorAll("[data-year]").forEach((node) => { node.textContent = new Date().getFullYear(); });
+
