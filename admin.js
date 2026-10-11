@@ -13,7 +13,7 @@ const currency = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 let stockItems = [];
 const inviteParams = new URLSearchParams(window.location.hash.slice(1));
 const inviteError = inviteParams.get("error_description") || inviteParams.get("error");
-let inviteCredentials = inviteParams.get("type") === "invite" && inviteParams.get("access_token")
+let inviteCredentials = ["invite", "recovery"].includes(inviteParams.get("type")) && inviteParams.get("access_token")
   ? {
       access_token: inviteParams.get("access_token"),
       refresh_token: inviteParams.get("refresh_token") || "",
@@ -42,7 +42,7 @@ async function apiRequest(url, options = {}) {
       admin_backend_not_configured: "Backend setup is incomplete. Add the Supabase settings in Vercel first.",
       unauthorized: "Your sign-in has expired. Please sign in again.",
       invalid_login: "That email or password didn’t work.",
-      invalid_invitation: "This invitation link has expired or was already used. Ask the admin to send a new one.",
+      invalid_invitation: "This link has expired or was already used. Ask the admin to send a new invitation or password reset.",
       password_too_short: "Choose a password with at least 8 characters.",
       password_update_failed: "Supabase could not save that password. Try another password or ask the admin to send a fresh invite.",
       admin_not_allowed: "This email is not listed as a LaptopFactory admin. Ask the project owner to check the admin email setting.",
@@ -297,7 +297,7 @@ tableBody.addEventListener("click", async (event) => {
 if (inviteCredentials) {
   showInvitePanel();
 } else if (inviteError) {
-  showInvitePanel("This invitation link could not be verified. Ask the admin to send a fresh one.");
+  showInvitePanel("This link could not be verified. Ask the admin to send a fresh invitation or password reset.");
 } else {
 fetch("/api/admin/auth", { headers: { Accept: "application/json" }, credentials: "same-origin", cache: "no-store" })
   .then(async (response) => ({ ok: response.ok, data: await response.json().catch(() => ({})) }))
