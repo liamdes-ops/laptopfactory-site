@@ -74,10 +74,6 @@ if (inventoryGrid && inventoryStatus) {
 
       const media = document.createElement("div");
       media.className = `inventory-card-media inventory-${item.category || "computer"}`;
-      const type = document.createElement("span");
-      type.className = "inventory-card-type";
-      type.textContent = categoryLabels[item.category] || "Computer";
-      media.append(type);
 
       if (item.image_url) {
         const image = document.createElement("img");
@@ -101,30 +97,15 @@ if (inventoryGrid && inventoryStatus) {
       front.tabIndex = 0;
       front.setAttribute("aria-expanded", "false");
       front.setAttribute("aria-label", `Show details for ${item.name || "available computer"}`);
-      const content = document.createElement("div");
-      content.className = "inventory-card-content";
-      const title = document.createElement("h3");
-      title.textContent = item.name || "Computer";
-      const model = document.createElement("p");
-      model.className = "inventory-card-model";
-      model.textContent = [item.brand, item.model].filter(Boolean).join(" · ") || categoryLabels[item.category] || "Computer";
-      const specs = document.createElement("p");
-      specs.className = "inventory-card-specs";
-      specs.textContent = item.specifications || "Ask us for full specifications.";
-
-      const meta = document.createElement("div");
-      meta.className = "inventory-card-meta";
-      const condition = document.createElement("span");
-      condition.textContent = item.condition || "Refurbished";
-      const quantity = document.createElement("span");
-      quantity.textContent = `${item.stock_quantity} available`;
-      meta.append(condition, quantity);
-
-      const bottom = document.createElement("div");
-      bottom.className = "inventory-card-bottom";
+      const caption = document.createElement("div");
+      caption.className = "inventory-card-caption";
+      const brand = document.createElement("strong");
+      brand.className = "inventory-card-brand";
+      brand.textContent = item.brand || item.name || "Computer";
       const price = document.createElement("strong");
       price.className = "inventory-card-price";
       price.textContent = Number(item.price_inr) > 0 ? `₹${priceFormatter.format(Number(item.price_inr))}` : "Ask for price";
+      caption.append(brand, price);
       const ask = document.createElement("a");
       ask.className = "inventory-card-ask";
       const question = `Hi LaptopFactory, is ${item.name || "this computer"} still available? Please share the details.`;
@@ -132,13 +113,7 @@ if (inventoryGrid && inventoryStatus) {
       ask.target = "_blank";
       ask.rel = "noreferrer";
       ask.textContent = "Ask about this item ↗";
-      const flipHint = document.createElement("span");
-      flipHint.className = "inventory-flip-hint";
-      flipHint.textContent = "Tap for details ↗";
-      bottom.append(price, flipHint);
-
-      content.append(title, model, specs, meta, bottom);
-      front.append(media, content);
+      front.append(media, caption);
 
       const back = document.createElement("div");
       back.className = "inventory-card-face inventory-card-back";
@@ -189,6 +164,9 @@ if (inventoryGrid && inventoryStatus) {
         }
       });
       backButton.addEventListener("click", () => setFlipped(false));
+      back.addEventListener("click", (event) => {
+        if (!event.target.closest("a, button")) setFlipped(false);
+      });
       card.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && card.classList.contains("is-flipped")) setFlipped(false);
       });
