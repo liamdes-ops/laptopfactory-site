@@ -59,21 +59,24 @@
       </div>
 
       <form id="inventory-form" class="admin-inventory-form" hidden>
-        <div class="admin-form-heading"><div><p class="eyebrow">STOCK DETAILS</p><h2 id="inventory-form-title">Add item</h2></div><button class="admin-text-button" id="cancel-stock-edit" type="button">Cancel</button></div>
+        <div class="admin-form-heading"><div><p class="eyebrow">STOCK DETAILS <span class="form-step">01 / 03</span></p><h2 id="inventory-form-title">Add item</h2><p class="admin-form-intro">Add the details customers need to choose the right device.</p></div><button class="admin-text-button" id="cancel-stock-edit" type="button">Cancel</button></div>
         <input type="hidden" name="id">
         <div class="admin-fields">
-          <label class="field-wide">Listing name<input name="name" required maxlength="120" placeholder="ThinkPad T480"></label>
+          <div class="form-section-label field-wide"><span>01</span><div><strong>Device</strong><small>What are you listing?</small></div></div>
+          <label class="field-wide product-name-field">Device name<input name="name" required maxlength="120" autocomplete="off" aria-describedby="name-help"><small class="field-help" id="name-help">This is the product title customers will see in the stock list.</small></label>
           <label>Category<select name="category" required><option value="laptop">Laptop</option><option value="desktop">Desktop PC</option><option value="cpu">CPU unit</option></select></label>
-          <label>Condition<input name="condition" required maxlength="60" value="Refurbished" placeholder="Refurbished"></label>
-          <label>Brand<input name="brand" maxlength="80" placeholder="Lenovo"></label>
-          <label>Model<input name="model" maxlength="120" placeholder="ThinkPad T480"></label>
-          <label>Price (₹)<input name="price_inr" type="number" min="0" max="100000000" step="1" value="0" required></label>
-          <label>Quantity in stock<input name="stock_quantity" type="number" min="0" max="100000" step="1" value="1" required></label>
-          <label class="field-wide">Specifications<input name="specifications" maxlength="700" placeholder="8 GB RAM · 256 GB SSD · Core i5"></label>
-          <label class="field-wide">Photo URL <span class="field-optional">(optional, https link)</span><input name="image_url" type="url" placeholder="https://…"></label>
+          <label>Condition<input name="condition" required maxlength="60" value="Refurbished"></label>
+          <label>Brand<input name="brand" maxlength="80" autocomplete="off"></label>
+          <label>Model<input name="model" maxlength="120" autocomplete="off"></label>
+          <label class="field-wide">Specifications<input name="specifications" maxlength="700" autocomplete="off" aria-describedby="specifications-help"><small class="field-help" id="specifications-help">Include key details such as RAM, storage, processor, and screen size.</small></label>
+          <div class="form-section-label field-wide"><span>02</span><div><strong>Price &amp; availability</strong><small>Keep the listing current.</small></div></div>
+          <label>Price (₹)<input name="price_inr" type="number" min="0" max="100000000" step="1" value="0" required inputmode="numeric"></label>
+          <label>Quantity in stock<input name="stock_quantity" type="number" min="0" max="100000" step="1" value="1" required inputmode="numeric"></label>
+          <div class="form-section-label field-wide"><span>03</span><div><strong>Product photo</strong><small>Use a clear, direct HTTPS image link.</small></div></div>
+          <label class="field-wide">Photo URL <span class="field-optional">(optional)</span><input name="image_url" type="url" autocomplete="url" aria-describedby="photo-help"><small class="field-help" id="photo-help">A landscape photo works best. The listing uses a device illustration when no image is added.</small></label>
         </div>
-        <label class="admin-active-toggle"><input name="is_active" type="checkbox" checked> Show this item on the public page</label>
-        <div class="admin-form-actions"><button class="button button-light" id="cancel-stock-form" type="button">Cancel</button><button class="button button-primary" type="submit">Save item <span aria-hidden="true">↗</span></button></div>
+        <label class="admin-active-toggle"><input name="is_active" type="checkbox" checked><span><strong>Show this item on the public page</strong><small>Turn this off to keep it in admin without listing it for customers.</small></span></label>
+        <div class="admin-form-actions"><button class="button button-light" id="cancel-stock-form" type="button">Cancel</button><button class="button button-primary" type="submit"><span class="save-label">Save item</span><span aria-hidden="true">↗</span></button></div>
       </form>
 
       <div class="admin-inventory-list">
@@ -92,4 +95,3 @@
   <script src="admin.js" defer></script>
 </body>
 </html>
-

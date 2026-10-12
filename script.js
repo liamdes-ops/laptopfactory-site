@@ -69,6 +69,8 @@ if (inventoryGrid && inventoryStatus) {
     visibleItems.forEach((item) => {
       const card = document.createElement("article");
       card.className = "inventory-card";
+      const cardInner = document.createElement("div");
+      cardInner.className = "inventory-card-inner";
 
       const media = document.createElement("div");
       media.className = `inventory-card-media inventory-${item.category || "computer"}`;
@@ -82,6 +84,7 @@ if (inventoryGrid && inventoryStatus) {
         image.src = item.image_url;
         image.alt = item.name ? `${item.name} available at LaptopFactory` : "Available computer";
         image.loading = "lazy";
+        image.decoding = "async";
         image.onerror = () => image.remove();
         media.append(image);
       } else {
@@ -92,6 +95,12 @@ if (inventoryGrid && inventoryStatus) {
         media.append(illustration);
       }
 
+      const front = document.createElement("div");
+      front.className = "inventory-card-face inventory-card-front";
+      front.setAttribute("role", "button");
+      front.tabIndex = 0;
+      front.setAttribute("aria-expanded", "false");
+      front.setAttribute("aria-label", `Show details for ${item.name || "available computer"}`);
       const content = document.createElement("div");
       content.className = "inventory-card-content";
       const title = document.createElement("h3");
@@ -123,10 +132,69 @@ if (inventoryGrid && inventoryStatus) {
       ask.target = "_blank";
       ask.rel = "noreferrer";
       ask.textContent = "Ask about this item ↗";
-      bottom.append(price, ask);
+      const flipHint = document.createElement("span");
+      flipHint.className = "inventory-flip-hint";
+      flipHint.textContent = "Tap for details ↗";
+      bottom.append(price, flipHint);
 
       content.append(title, model, specs, meta, bottom);
-      card.append(media, content);
+      front.append(media, content);
+
+      const back = document.createElement("div");
+      back.className = "inventory-card-face inventory-card-back";
+      back.setAttribute("aria-hidden", "true");
+      back.inert = true;
+      const backHead = document.createElement("div");
+      backHead.className = "inventory-back-head";
+      const backLabel = document.createElement("span");
+      backLabel.textContent = `${categoryLabels[item.category] || "Computer"} · ${item.condition || "Refurbished"}`;
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.className = "inventory-back-button";
+      backButton.textContent = "← Photo";
+      backButton.setAttribute("aria-label", `Return to photo of ${item.name || "computer"}`);
+      backHead.append(backLabel, backButton);
+      const backTitle = document.createElement("h3");
+      backTitle.textContent = item.name || "Computer";
+      const backModel = document.createElement("p");
+      backModel.className = "inventory-back-model";
+      backModel.textContent = [item.brand, item.model].filter(Boolean).join(" · ") || categoryLabels[item.category] || "Computer";
+      const backSpecs = document.createElement("p");
+      backSpecs.className = "inventory-back-specs";
+      backSpecs.textContent = item.specifications || "Ask the shop for full specifications.";
+      const detailMeta = document.createElement("div");
+      detailMeta.className = "inventory-back-stock";
+      const availableLabel = document.createElement("span");
+      availableLabel.textContent = "AVAILABLE NOW";
+      const availableQuantity = document.createElement("strong");
+      availableQuantity.textContent = String(item.stock_quantity);
+      detailMeta.append(availableLabel, availableQuantity);
+      back.append(backHead, backTitle, backModel, backSpecs, detailMeta, ask);
+
+      function setFlipped(open) {
+        card.classList.toggle("is-flipped", open);
+        front.setAttribute("aria-expanded", String(open));
+        front.setAttribute("aria-hidden", String(open));
+        back.setAttribute("aria-hidden", String(!open));
+        front.tabIndex = open ? -1 : 0;
+        back.inert = !open;
+        if (open) backButton.focus({ preventScroll: true });
+        else front.focus({ preventScroll: true });
+      }
+      front.addEventListener("click", () => setFlipped(true));
+      front.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setFlipped(true);
+        }
+      });
+      backButton.addEventListener("click", () => setFlipped(false));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && card.classList.contains("is-flipped")) setFlipped(false);
+      });
+
+      cardInner.append(front, back);
+      card.append(cardInner);
       inventoryGrid.append(card);
     });
 

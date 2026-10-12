@@ -30,7 +30,7 @@ The public API only returns active items with a quantity above zero. Admin chang
 
 Opening the HTML files directly with `file://` does not run the API. View the live inventory and admin panel through the deployed Vercel site (or run it with the Vercel development server).
 
-Items support a name, type, brand, model, condition, specifications, INR price, quantity, optional HTTPS photo URL, and a visibility toggle. The admin can add, edit, and permanently delete entries. Image upload is not included; use a hosted HTTPS image URL if a product photo is needed.
+Items support a name, type, brand, model, condition, specifications, INR price, quantity, optional HTTPS photo URL, and a visibility toggle. The admin can add, edit, and permanently delete entries. Product cards reveal device details with a keyboard- and touch-friendly flip. Image upload is not included; use a hosted HTTPS image URL if a product photo is needed.
 
 ## Deploying
 
